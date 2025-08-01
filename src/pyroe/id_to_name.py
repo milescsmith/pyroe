@@ -1,19 +1,23 @@
 import pyranges
 import logging
-import pathlib
 import sys
+from pathlib import Path
 
 
-def id_to_name(params):
+def id_to_name(
+    gtf_file: Path,
+    output: Path,
+    file_format: str,
+) -> None:
     format_map = {
         "gtf": pyranges.read_gtf,
         "gff": pyranges.read_gff3,
         "gff3": pyranges.read_gff3,
     }
     annot_reader = None
-    if params.format is None:
-        p = pathlib.Path(params.gtf_file)
-        suffs = [z.lower().strip('.') for z in p.suffixes]
+    if file_format is None:
+        p = Path(gtf_file)
+        suffs = [z.lower().strip(".") for z in p.suffixes]
 
         z = None
         if len(suffs) >= 1:
@@ -33,7 +37,7 @@ def id_to_name(params):
         else:
             annot_reader = format_map[z]
     else:
-        fmt = params.format.lower()
+        fmt = file_format.lower()
         if fmt not in format_map.keys():
             logging.error(
                 f'Format must be either "gtf" or "gff3", but {fmt} was provided.'
@@ -41,7 +45,7 @@ def id_to_name(params):
             sys.exit(1)
         annot_reader = format_map[fmt]
 
-    a = annot_reader(params.gtf_file)
+    a = annot_reader(gtf_file)
     # only bother looking at `gene` features
     a_genes = a[(a.Feature == "gene")]
     id_name = {}
@@ -50,8 +54,8 @@ def id_to_name(params):
         id_name.update({d["gene_id"]: d["gene_name"] for d in cdf})
 
     logging.info(f"generated mappings for {len(id_name)} gene ids.")
-    logging.info(f"writing output to {params.output}")
+    logging.info(f"writing output to {output}")
 
-    with open(params.output, "w") as ofile:
+    with open(output, "w") as ofile:
         for k, v in id_name.items():
             ofile.write(f"{k}\t{v}\n")

@@ -464,7 +464,7 @@ def make_splici_txome(
     extra_unspliced=None,
     dedup_seqs=False,
     no_bt=False,
-    bt_path="bedtools",
+    bt_path=None,
     no_flanking_merge=False,
 ):
     """
@@ -558,6 +558,7 @@ def make_splici_txome(
         if not check_bedtools_version(bt_path):
             # if it's not ok at the provided path, check
             # the standard system path
+
             if bt_path == "bedtools":
                 # in this case, there's nowhere else to check
                 # so give up on bedtools
@@ -718,7 +719,6 @@ def make_splici_txome(
     # splici fasta
     if not no_bt:
         try:
-
             # create temp folder
             temp_dir = os.path.join(output_dir, "temp")
             if not os.path.exists(temp_dir):
@@ -736,7 +736,7 @@ def make_splici_txome(
                         bt_path,
                         "getfasta",
                         "-fi",
-                        genome_path,
+                        str(genome_path),
                         "-fo",
                         temp_fa,
                         "-bed",
@@ -759,7 +759,6 @@ def make_splici_txome(
             # prev_rec.id = prev_rec.id.split("(")[0]
             prev_rec.description = ""
             with open(out_fa, "w") as out_handle:
-
                 for seq_record in ei_parser:
                     # seq_record.id = seq_record.id.split("(")[0]
                     seq_record.description = ""
@@ -798,7 +797,7 @@ def make_splici_txome(
                     # init seq list
                     intron_seqs = []
                     # for each intron record
-                    for (idx, intron_record) in chr_records.iterrows():
+                    for idx, intron_record in chr_records.iterrows():
                         # create Seqeture object for extracting sequence from chromosome
                         intron_feature = SeqFeature(
                             FeatureLocation(intron_record.Start, intron_record.End),
@@ -823,12 +822,11 @@ def make_splici_txome(
                 if not chr_records.empty:
                     txp_seqs = []
                     # as spliced txps are the concat of all exon sequences, fist get the sequence of each exon separately,then sum them up.
-                    for (tid, exon_records) in chr_records.groupby("Name"):
-
+                    for tid, exon_records in chr_records.groupby("Name"):
                         # init exon seq list
                         exon_seqs = []
                         # get the sequence of each exon
-                        for (idx, exon_record) in exon_records.iterrows():
+                        for idx, exon_record in exon_records.iterrows():
                             # create SeqFeature object for the exon record
                             # ignore strand for now, get reverse complement later if needed
                             exon_feature = SeqFeature(
@@ -1116,7 +1114,6 @@ def make_spliceu_txome(
             # prev_rec.id = prev_rec.id.split("(")[0]
             prev_rec.description = ""
             with open(out_fa, "w") as out_handle:
-
                 for seq_record in ei_parser:
                     # seq_record.id = seq_record.id.split("(")[0]
                     seq_record.description = ""
@@ -1155,7 +1152,7 @@ def make_spliceu_txome(
                     # init seq list
                     unspliced_seqs = []
                     # for each unspliced record
-                    for (idx, unspliced_record) in chr_records.iterrows():
+                    for idx, unspliced_record in chr_records.iterrows():
                         # create Seqeture object for extracting sequence from chromosome
                         unspliced_feature = SeqFeature(
                             FeatureLocation(
@@ -1181,12 +1178,11 @@ def make_spliceu_txome(
                 if not chr_records.empty:
                     txp_seqs = []
                     # as spliced txps are the concat of all exon sequences, fist get the sequence of each exon separately,then sum them up.
-                    for (tid, exon_records) in chr_records.groupby("Name"):
-
+                    for tid, exon_records in chr_records.groupby("Name"):
                         # init exon seq list
                         exon_seqs = []
                         # get the sequence of each exon
-                        for (idx, exon_record) in exon_records.iterrows():
+                        for idx, exon_record in exon_records.iterrows():
                             # create SeqFeature object for the exon record
                             # ignore strand for now, get reverse complement later if needed
                             exon_feature = SeqFeature(

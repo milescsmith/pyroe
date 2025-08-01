@@ -1,8 +1,43 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+requires = ["pdm-backend", "setuptools>=80.0.0"]
+build-backend = "pdm.backend"
+
+
+# [tool.pdm]
+# package-dir = "src"
+
+[project]
+name = "pyroe"
+version = "0.9.3"
+description = "utilities of alevin-fry"
+readme = "README.md"
+authors = [
+    {name = "Dongze He, Rob Patro", email = "dhe17@umd.edu, rob@cs.umd.edu"},
+]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "biopython>=1.85",
+    "packaging>=21.0",
+    "pandas>=2.0.0",
+    "scanpy>=1.8.2",
+    "typer>=0.15.3",
+    "rich>=14.0.0",
+    "setuptools>=80.1.0",
+    "pyranges @ git+https://github.com/milescsmith/pyranges@0.1.5"
 ]
 
+[project.urls]
+Homepage = "https://github.com/COMBINE-lab/pyroe"
 
-build-backend = "setuptools.build_meta"
+[dependency-groups]
+dev = [
+    "ruff>=0.11.8",
+]
+
+[project.scripts]
+pyroe = "pyroe.__main__:app"

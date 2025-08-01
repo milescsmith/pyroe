@@ -34,7 +34,7 @@ class ProcessedQuant:
         available_datasets = ProcessedQuant.get_available_dataset_df()
         epilog = "\n".join(
             [
-                "".join([f"{idx+1}", ". ", dataset_name])
+                "".join([f"{idx + 1}", ". ", dataset_name])
                 for (idx, dataset_name) in zip(
                     range(available_datasets.shape[0]),
                     available_datasets["dataset_name"].tolist(),

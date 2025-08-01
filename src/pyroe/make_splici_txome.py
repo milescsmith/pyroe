@@ -134,7 +134,6 @@ def check_gr(gr, output_dir, write_clean_gtf):
 
     # If there is any NaN in transcript_id field, quit
     if sum(gr.transcript_id.isnull()):
-
         # first, write an clean GTF if needed
         if write_clean_gtf:
             gr = pr.concat([gene_gr, gr[gr.transcript_id.notnull()]])
@@ -153,7 +152,6 @@ def check_gr(gr, output_dir, write_clean_gtf):
     num_nan = gr.df[["gene_id", "gene_name"]].isnull().sum(axis=1)
 
     if num_nan.sum():
-
         # create intermediate df
         gene_df = gr.df[["gene_id", "gene_name"]]
 
@@ -493,7 +491,6 @@ def make_splici_txome(
     # splici fasta
     if not no_bt:
         try:
-
             # create temp folder
             temp_dir = os.path.join(output_dir, "temp")
             if not os.path.exists(temp_dir):
@@ -534,7 +531,6 @@ def make_splici_txome(
             # prev_rec.id = prev_rec.id.split("(")[0]
             prev_rec.description = ""
             with open(out_fa, "w") as out_handle:
-
                 for seq_record in ei_parser:
                     # seq_record.id = seq_record.id.split("(")[0]
                     seq_record.description = ""
@@ -559,7 +555,6 @@ def make_splici_txome(
             shutil.rmtree(temp_dir, ignore_errors=True)
 
     if no_bt:
-
         from Bio.Seq import Seq
         from Bio.SeqFeature import SeqFeature, FeatureLocation
 
@@ -577,7 +572,7 @@ def make_splici_txome(
                     # init seq list
                     intron_seqs = []
                     # for each intron record
-                    for (idx, intron_record) in chr_records.iterrows():
+                    for idx, intron_record in chr_records.iterrows():
                         # create Seqeture object for extracting sequence from chromosome
                         intron_feature = SeqFeature(
                             FeatureLocation(intron_record.Start, intron_record.End),
@@ -601,12 +596,11 @@ def make_splici_txome(
                 if not chr_records.empty:
                     txp_seqs = []
                     # as spliced txps are the concat of all exon sequences, fist get the sequence of each exon separately,then sum them up.
-                    for (tid, exon_records) in chr_records.groupby("Name"):
-
+                    for tid, exon_records in chr_records.groupby("Name"):
                         # init exon seq list
                         exon_seqs = []
                         # get the sequence of each exon
-                        for (idx, exon_record) in exon_records.iterrows():
+                        for idx, exon_record in exon_records.iterrows():
                             # create SeqFeature object for the exon record
                             # ignore strand for now, get reverse complement later if needed
                             exon_feature = SeqFeature(
